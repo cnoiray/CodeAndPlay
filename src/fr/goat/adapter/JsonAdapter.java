@@ -1,7 +1,7 @@
 /**
  *
  */
-package test.gson;
+package fr.goat.adapter;
 
 import com.google.gson.Gson;
 
