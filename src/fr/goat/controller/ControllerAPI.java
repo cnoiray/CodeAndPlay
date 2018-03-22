@@ -5,7 +5,6 @@ package fr.goat.controller;
 
 import java.text.MessageFormat;
 
-import fr.goat.adapter.CoordonneeAdapter;
 import fr.goat.adapter.MapAdapter;
 import fr.goat.bo.MapPOJO;
 import fr.goat.utils.ConstantAPI;
@@ -13,6 +12,7 @@ import fr.goat.utils.ConstantTeam;
 import fr.goat.utils.GameStatut;
 import fr.goat.utils.JerseyService;
 import fr.goat.utils.ResultCoupStatut;
+import fr.goat.utils.UrlGenerator;
 
 /**
  * @author cnoiray
@@ -20,11 +20,9 @@ import fr.goat.utils.ResultCoupStatut;
 public class ControllerAPI {
 
     private final MapAdapter mapAdapter;
-    private final CoordonneeAdapter coordonneeAdapter;
-
+    
     public ControllerAPI() {
-        mapAdapter = new MapAdapter();
-        coordonneeAdapter = new CoordonneeAdapter();
+        mapAdapter = new MapAdapter();	
     }
 
     /**
@@ -42,7 +40,7 @@ public class ControllerAPI {
      * @return idTeam
      */
     public String getIdEquipeAPI() {
-        final String urlFormat = ConstantAPI.URL + ConstantAPI.GET_UTILISATEUR_ID;
+        final String urlFormat = UrlGenerator.genererUrlAction(ConstantAPI.GET_UTILISATEUR_ID);
         final String url = MessageFormat.format(urlFormat, ConstantTeam.TEAM_NAME, ConstantTeam.TEAM_MDP);
         return JerseyService.jerseyClientGetString(url);
     }
@@ -54,7 +52,7 @@ public class ControllerAPI {
      * @return id partie
      */
     public String getNextAdversaireAPI(final String teamId) {
-        final String urlFormat = ConstantAPI.URL + ConstantAPI.GET_NEXT_ADVERSAIRE;
+        final String urlFormat = UrlGenerator.genererUrlAction(ConstantAPI.GET_NEXT_ADVERSAIRE);
         final String url = MessageFormat.format(urlFormat, teamId);
         return JerseyService.jerseyClientGetString(url);
     }
@@ -66,7 +64,7 @@ public class ControllerAPI {
      * @return
      */
     public String chooseGameAPI(final int lvlIA, final String teamId) {
-        final String urlFormat = ConstantAPI.URL + ConstantAPI.CREATE_IA_GAME;
+        final String urlFormat = UrlGenerator.genererUrlAction(ConstantAPI.CREATE_IA_GAME);
         final String url = MessageFormat.format(urlFormat, lvlIA, teamId);
         return JerseyService.jerseyClientGetString(url);
     }
@@ -79,7 +77,7 @@ public class ControllerAPI {
      * @return
      */
     public String nextGameToPlayVsIaAPI(final String teamId) {
-        final String urlFormat = ConstantAPI.URL + ConstantAPI.GET_NEXT_IA_GAME_ID;
+        final String urlFormat = UrlGenerator.genererUrlAction(ConstantAPI.GET_NEXT_IA_GAME_ID);
         final String url = MessageFormat.format(urlFormat, teamId);
         return JerseyService.jerseyClientGetString(url);
     }
@@ -95,7 +93,7 @@ public class ControllerAPI {
      * @return Game Statut
      */
     public GameStatut getGameStatutAPI(final String teamId, final String gameId) {
-        final String urlFormat = ConstantAPI.URL + ConstantAPI.GET_GAME_STATUT;
+        final String urlFormat = UrlGenerator.genererUrlAction(ConstantAPI.GET_GAME_STATUT);
         final String url = MessageFormat.format(urlFormat, gameId, teamId);
         final String statut = JerseyService.jerseyClientGetString(url);
         return GameStatut.valueOf(statut);
@@ -109,7 +107,7 @@ public class ControllerAPI {
      * @return
      */
     public MapPOJO getGameAPI(final String gameId) {
-        final String urlFormat = ConstantAPI.URL + ConstantAPI.GET_GAME_BOARD;
+        final String urlFormat = UrlGenerator.genererUrlAction(ConstantAPI.GET_GAME_BOARD);
         final String url = MessageFormat.format(urlFormat, gameId);
         final String result = JerseyService.jerseyClientGetJsonApli(url);
 
@@ -124,17 +122,11 @@ public class ControllerAPI {
      * @return
      */
     public Object lastMoveAPI(final String gameId) {
-        final String urlFormat = ConstantAPI.URL + ConstantAPI.GET_LAST_MOVE;
+        final String urlFormat = UrlGenerator.genererUrlAction(ConstantAPI.GET_LAST_MOVE);
         final String url = MessageFormat.format(urlFormat, gameId);
-        Object resultObj = new Object();
-        try {
-            final String result = JerseyService.jerseyClientGetJsonApli(url);
-            resultObj = coordonneeAdapter.toObject(result);
-        } catch (final Exception exception) {
-            System.out.println(exception);
-        }
-
-        return resultObj;
+        final String result = JerseyService.jerseyClientGetString(url);
+        
+        return result;
     }
 
     /**
@@ -149,7 +141,7 @@ public class ControllerAPI {
      */
     public ResultCoupStatut playAPI(final String gameId, final String teamId, final String coordX,
         final String coordY) {
-        final String urlFormat = ConstantAPI.URL + ConstantAPI.PLAY;
+        final String urlFormat = UrlGenerator.genererUrlAction(ConstantAPI.PLAY);
         final String url = MessageFormat.format(urlFormat, gameId, teamId, coordX, coordY);
         final String result = JerseyService.jerseyClientGetString(url);
         return ResultCoupStatut.valueOf(result);
