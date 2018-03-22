@@ -63,4 +63,20 @@ public class Position {
         row = pRow;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(final Object B) {
+        if (B == null || !(B instanceof Position)) {
+            return false;
+        }
+
+        if (this.getLane() == ((Position) B).getLane() && this.getRow() == ((Position) B).getRow()) {
+            return true;
+        }
+        return false;
+    }
+
 }

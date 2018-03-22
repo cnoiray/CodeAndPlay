@@ -1,7 +1,9 @@
 package fr.goat.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import fr.goat.bo.Board;
 import fr.goat.bo.Items;
@@ -24,10 +26,11 @@ public class GameMecanicsServices {
         if (pos.getLane() == 4) {
             moveList.remove(MoveEnum.RIGHT);
         }
+
         for (final Items item : listObstacle) {
             final Position posObstacle = item.getPosition();
 
-            if (item.getType().equals("O") || item.getType().equals("M")) {
+            if (item.getType().equals("O") || item.getType().equals("M") || item.getType().equals("R")) {
                 if (moveList.contains(MoveEnum.LEFT) && testPosition(posObstacle, new Position(pos.getLane() - 1, pos
                     .getRow() + 1))) {
                     moveList.remove(MoveEnum.LEFT);
@@ -39,6 +42,7 @@ public class GameMecanicsServices {
                 }
                 if (moveList.contains(MoveEnum.FORWARD) && testPosition(posObstacle, new Position(pos.getLane(), pos
                     .getRow() + 2))) {
+
                     moveList.remove(MoveEnum.FORWARD);
                     moveList.remove(MoveEnum.USE_BONUS);
                 }
@@ -46,6 +50,57 @@ public class GameMecanicsServices {
                     moveList.remove(MoveEnum.RIGHT);
                 }
             }
+        }
+
+        if (moveList.contains(MoveEnum.FORWARD) && pPlayerNous.getInventory() != null && !pPlayerNous.getInventory()
+            .isEmpty()) {
+            moveList.add(0, MoveEnum.USE_BONUS);
+        } else {
+            moveList.remove(MoveEnum.USE_BONUS);
+        }
+
+        return moveList;
+    }
+
+    public static List<MoveEnum> evaluateNextPositionNewGen(final Player pPlayerNous, final List<Items> listObstacle) {
+        final List<MoveEnum> moveList = new ArrayList<>();
+        for (final MoveEnum val : MoveEnum.values()) {
+            moveList.add(val);
+        }
+        final PositionPlayer pos = pPlayerNous.getPosition();
+        if (pos.getLane() == 0) {
+            moveList.remove(MoveEnum.LEFT);
+        }
+        if (pos.getLane() == 4) {
+            moveList.remove(MoveEnum.RIGHT);
+        }
+
+        final Map<Position, Items> mapItem = new HashMap<Position, Items>();
+        for (final Items item : listObstacle) {
+            if (item.getType().equals("O") || item.getType().equals("M") || item.getType().equals("R")) {
+                mapItem.put(item.getPosition(), item);
+            }
+        }
+
+        if (moveList.contains(MoveEnum.LEFT) && mapItem.get(new Position(pos.getLane() - 1, pos.getRow()
+            + 1)) != null) {
+            moveList.remove(MoveEnum.LEFT);
+        }
+        if (mapItem.get(new Position(pos.getLane(), pos.getRow() + 1)) != null) {
+            moveList.remove(MoveEnum.BRAKE);
+            moveList.remove(MoveEnum.FORWARD);
+            moveList.remove(MoveEnum.USE_BONUS);
+        }
+        if (moveList.contains(MoveEnum.FORWARD) && mapItem.get(new Position(pos.getLane(), pos.getRow() + 2)) != null) {
+            // if(mapItem.get(new Position())) {
+            //
+            // }
+
+            moveList.remove(MoveEnum.FORWARD);
+            moveList.remove(MoveEnum.USE_BONUS);
+        }
+        if (mapItem.get(new Position(pos.getLane() + 1, pos.getRow() + 1)) != null) {
+            moveList.remove(MoveEnum.RIGHT);
         }
 
         if (moveList.contains(MoveEnum.FORWARD) && pPlayerNous.getInventory() != null && !pPlayerNous.getInventory()

@@ -132,8 +132,12 @@ public class GameManager {
                 board = GameMecanicsServices.nextBoard(board);
 
                 // evalue par rapport au obstacle
-                final List<MoveEnum> nextMvtList = GameMecanicsServices.evaluateNextPosition(board.getSelfPlayer(),
-                    board.getItems());
+                // final List<MoveEnum> nextMvtList =
+                // GameMecanicsServices.evaluateNextPosition(board.getSelfPlayer(),
+                // board.getItems());
+
+                final List<MoveEnum> nextMvtList = GameMecanicsServices.evaluateNextPositionNewGen(board
+                    .getSelfPlayer(), board.getItems());
 
                 MoveEnum nextMvt = MoveEnum.FORWARD;
                 if (nextMvtList.size() != 0) {
