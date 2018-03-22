@@ -3,8 +3,10 @@
  */
 package fr.goat.controller;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,19 +18,25 @@ import fr.goat.utils.ResultCoupStatut;
  * @author cnoiray
  */
 public class TestAPI {
-	ControllerAPI controller;
-	
-	public TestAPI() {
-		// TODO Auto-generated constructor stub
-	}
-	
-	@Before
-	public void setup() {
-		controller = new ControllerAPI();
-	}
-	
+
+    private static final Logger LOGGER = Logger.getLogger(TestAPI.class);
+
+    ControllerAPI controller;
+
+    public TestAPI() {
+        // TODO Auto-generated constructor stub
+    }
+
+    @Before
+    public void setup() {
+        System.setProperty("http.proxyHost", "marc.proxy.corp.sopra");
+        System.setProperty("http.proxyPort", "8080");
+        controller = new ControllerAPI();
+    }
+
     @Test
     public void test() {
+        LOGGER.info("Debut test");
         final String teamId = controller.getIdEquipeAPI();
         assertTrue(teamId != null);
 
@@ -60,5 +68,6 @@ public class TestAPI {
 
         final ResultCoupStatut result = controller.playAPI(gameId, teamId, "10", "1");
         assertEquals(ResultCoupStatut.OK, result);
+        LOGGER.info("Fin test");
     }
 }
