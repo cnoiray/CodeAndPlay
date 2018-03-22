@@ -58,19 +58,28 @@ public class GameMecanicsServices {
         return moveList;
     }
 
-    public static Board nextBoard(final Board board, final List<Items> listItems) {
+    public static Board nextBoard(final Board board) {
         final List<Items> rockets = new ArrayList<>();
-        for (final Items item : listItems) {
+        for (final Items item : board.getItems()) {
             if (item.getType().equals("R")) {
                 rockets.add(item);
             }
         }
 
         for (final Items currentRocket : rockets) {
-            // board.getItems().add(new Items(currentRocket.getX()+1; currentRocket.getY()));
-            // board.getItems().add(new Items(currentRocket.getX()+2; currentRocket.getY()));
-            // board.getItems().add(new Items(currentRocket.getX()+3; currentRocket.getY()));
-            // board.getItems().add(new Items(currentRocket.getX()+4; currentRocket.getY()));
+            final Position position1 = new Position(currentRocket.getPosition().getLane() + 1, currentRocket
+                .getPosition().getRow());
+            final Position position2 = new Position(currentRocket.getPosition().getLane() + 2, currentRocket
+                .getPosition().getRow());
+            final Position position3 = new Position(currentRocket.getPosition().getLane() + 3, currentRocket
+                .getPosition().getRow());
+            final Position position4 = new Position(currentRocket.getPosition().getLane() + 4, currentRocket
+                .getPosition().getRow());
+
+            board.getItems().add(new Items(currentRocket.getType(), position1, currentRocket.getPlayer()));
+            board.getItems().add(new Items(currentRocket.getType(), position2, currentRocket.getPlayer()));
+            board.getItems().add(new Items(currentRocket.getType(), position3, currentRocket.getPlayer()));
+            board.getItems().add(new Items(currentRocket.getType(), position4, currentRocket.getPlayer()));
         }
 
         return board;

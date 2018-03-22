@@ -56,7 +56,7 @@ public class TestAPI {
 
     @Test
     public void testWorkFlow() {
-        final GameManager manager = new GameManager(false, 7);
+        final GameManager manager = new GameManager(true, 6);
 
         manager.workflow();
     }

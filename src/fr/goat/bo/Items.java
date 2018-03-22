@@ -13,6 +13,25 @@ public class Items {
     private Player player;
 
     /**
+     *
+     */
+    public Items() {
+        super();
+    }
+
+    /**
+     * @param pType
+     * @param pPosition
+     * @param pPlayer
+     */
+    public Items(final String pType, final Position pPosition, final Player pPlayer) {
+        super();
+        type = pType;
+        position = pPosition;
+        player = pPlayer;
+    }
+
+    /**
      * Getter du paramètre 'type'
      *
      * @return Le paramètre 'type'

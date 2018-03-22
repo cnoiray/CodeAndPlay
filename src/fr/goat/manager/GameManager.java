@@ -127,7 +127,9 @@ public class GameManager {
                     break;
                 }
 
-                final Board board = controller.getGameAPI(gameId, teamId);
+                Board board = controller.getGameAPI(gameId, teamId);
+
+                board = GameMecanicsServices.nextBoard(board);
 
                 // evalue par rapport au obstacle
                 final List<MoveEnum> nextMvtList = GameMecanicsServices.evaluateNextPosition(board.getSelfPlayer(),
