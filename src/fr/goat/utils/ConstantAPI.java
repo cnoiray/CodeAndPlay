@@ -11,12 +11,12 @@ public class ConstantAPI {
     /**
      * adresse de base de l'API
      */
-    public final static String URL = "http://informations.codeandplay.date";
+    public final static String URL = "http://evenement.codeandplay.date";
 
     /**
      * Pefixe pour toutes les actions
      */
-    public final static String PREFIX = "/test-ws";
+    public final static String PREFIX = "/battle-ws/kart";
 
     /**
      * Retourne systématiquement "pong"
@@ -46,7 +46,7 @@ public class ConstantAPI {
      * Retourne l’identifiant de la partie en cours ou initialisée à lquelle l’équipe doit participer "NA" si
      * aucune partie n’est ouverte {0} = idEquipe
      */
-    public final static String GET_NEXT_IA_GAME_ID = "/practice/next/{0}";
+    // public final static String GET_NEXT_IA_GAME_ID = "/practice/next/{0}";
 
     /////// DEROULEMENT DE LA PARTIE ///////
     /**
@@ -62,19 +62,25 @@ public class ConstantAPI {
      * indiqué est json, la réponse sera au format JSON. Sinon, la réponse sera une String à parser. {0} =
      * idPartie
      */
-    public final static String GET_GAME_BOARD = "/game/board/{0}";
+    public final static String GET_GAME_BOARD = "/game/board/{0}/{1}?format=JSON";
 
     /**
      * Retourne le dernier coup joué sur le plateau de la partie indiquée "coordX,coordY" (détail pendant le
      * Code & Play) {0} = idPartie
      */
-    public final static String GET_LAST_MOVE = "/game/getlastmove/{0}";
+    // public final static String GET_LAST_MOVE = "/game/getlastmove/{0}";
 
     /**
      * Joue un coup dans la partie concernée, pour l’équipe concernée aux coordonnées X et Y données Retourne:
      * "OK" si le coup est accepté. "KO" si le coup est refusé/interdit. "GAGNE" si c'est le dernier coup
      * gagnant. "PTT" (Pas Ton Tour) si ce n'est pas au tour du joueur {0} = idPartie {1} = idEquipe {2} =
-     * coordX {3} = coordY
+     * move
      */
-    public final static String PLAY = "/game/play/{0}/{1}/{2}/{3}";
+    public final static String PLAY = "/game/play/{0}/{1}/{2}";
+
+    /**
+     * Permet de récupérer les noms des adversaires (équipe ou bot) contre lequel vous jouez. {0} = idPartie
+     * {1} = idEquipe
+     */
+    public final static String GET_OPPONENTS = "/game/opponents/{0}/{1}";
 }

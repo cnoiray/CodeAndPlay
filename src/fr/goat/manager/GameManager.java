@@ -3,9 +3,12 @@
  */
 package fr.goat.manager;
 
+import org.apache.log4j.Logger;
+
 import fr.goat.bo.MapPOJO;
 import fr.goat.controller.ControllerAPI;
 import fr.goat.utils.GameStatut;
+import fr.goat.utils.MoveEnum;
 import fr.goat.utils.ResultCoupStatut;
 
 /**
@@ -13,19 +16,24 @@ import fr.goat.utils.ResultCoupStatut;
  */
 public class GameManager {
 
+    private static final Logger LOGGER = Logger.getLogger(GameManager.class);
     private final ControllerAPI controller;
     private final boolean isPractice;
+    private final int lvlIA;
 
-    public GameManager(final boolean isPractice) {
+    public GameManager(final boolean isPractice, final int lvlIA) {
         controller = new ControllerAPI();
         this.isPractice = isPractice;
+        this.lvlIA = lvlIA;
 
     }
 
     public void workflow() {
+        LOGGER.info("start workflow");
         final String teamId = controller.getIdEquipeAPI();
         String gameId = "";
-        GameStatut statutGame = GameStatut.OUI;
+        GameStatut statutGame = GameStatut.CANPLAY;
+        boolean firstMove = true;
 
         if (isPractice) {
             gameId = practiceNewGame(teamId);
@@ -37,18 +45,19 @@ public class GameManager {
         boolean isFinish = false;
 
         // on joue la partie
-        while (ResultCoupStatut.OK.equals(result) || ResultCoupStatut.PTT.equals(result)) {
+        while (ResultCoupStatut.OK.equals(result) || ResultCoupStatut.NOTYET.equals(result)) {
             statutGame = controller.getGameStatutAPI(teamId, gameId);
 
             switch (statutGame) {
-            case NON:
+            case CANTPLAY:
                 continue;
-            case ANNULE:
-                continue;
-            case GAGNE:
+            case RANKING:
                 isFinish = true;
                 break;
-            case PERDU:
+            case RANKED:
+                isFinish = true;
+                break;
+            case CANCELLED:
                 isFinish = true;
                 break;
             }
@@ -57,21 +66,23 @@ public class GameManager {
                 break;
             }
 
-            final MapPOJO map = controller.getGameAPI(gameId);
+            final MapPOJO map = controller.getGameAPI(gameId, teamId);
 
-            // analyse map
-
-            result = controller.playAPI(gameId, teamId, "1", "2");
+            if (firstMove) {
+                result = controller.playAPI(gameId, teamId, MoveEnum.LEFT.name());
+                firstMove = false;
+            } else {
+                result = controller.playAPI(gameId, teamId, MoveEnum.FORWARD.name());
+            }
         }
-
+        LOGGER.info("end workflow");
     }
 
     public String practiceNewGame(final String teamId) {
         String gameId = null;
         while (gameId == null || "NA".equals(gameId)) {
-            gameId = controller.nextGameToPlayVsIaAPI(teamId);
+            gameId = controller.chooseGameAPI(lvlIA, teamId);
         }
-
         return gameId;
     }
 

@@ -10,5 +10,5 @@ public class ConstantTeam {
 
     public static String TEAM_NAME = "Goat%20Ham";
 
-    public static String TEAM_MDP = "Goat_Epic!";
+    public static String TEAM_MDP = "IlsVontRienPiraterMaisCaFaitBatman";
 }
