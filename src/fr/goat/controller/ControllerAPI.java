@@ -7,8 +7,9 @@ import java.text.MessageFormat;
 
 import org.apache.log4j.Logger;
 
+import fr.goat.adapter.BoardAdapter;
 import fr.goat.adapter.MapAdapter;
-import fr.goat.bo.MapPOJO;
+import fr.goat.bo.Board;
 import fr.goat.utils.ConstantAPI;
 import fr.goat.utils.ConstantTeam;
 import fr.goat.utils.GameStatut;
@@ -22,10 +23,12 @@ import fr.goat.utils.UrlGenerator;
 public class ControllerAPI {
 
     private final MapAdapter mapAdapter;
+    private final BoardAdapter boardAdapter;
     private static final Logger LOGGER = Logger.getLogger(TestAPI.class);
 
     public ControllerAPI() {
         mapAdapter = new MapAdapter();
+        boardAdapter = new BoardAdapter();
     }
 
     /**
@@ -127,13 +130,13 @@ public class ControllerAPI {
      * @param gameId
      * @return
      */
-    public MapPOJO getGameAPI(final String gameId, final String teamId) {
+    public Board getGameAPI(final String gameId, final String teamId) {
         pause();
         final String urlFormat = UrlGenerator.genererUrlAction(ConstantAPI.GET_GAME_BOARD);
         final String url = MessageFormat.format(urlFormat, gameId, teamId);
         final String result = JerseyService.jerseyClientGetJsonApli(url);
 
-        final MapPOJO resultObj = mapAdapter.toObject(result);
+        final Board resultObj = boardAdapter.toObject(result);
         LOGGER.info("Map: " + result);
         return resultObj;
     }
@@ -189,7 +192,7 @@ public class ControllerAPI {
 
     private void pause() {
         try {
-            Thread.sleep(100);
+            Thread.sleep(200);
         } catch (final InterruptedException exception) {
             // TODO Auto-generated catch block
             exception.printStackTrace();

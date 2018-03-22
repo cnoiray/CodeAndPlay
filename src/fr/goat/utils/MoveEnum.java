@@ -7,5 +7,5 @@ package fr.goat.utils;
  * @author cnoiray
  */
 public enum MoveEnum {
-    FORWARD, USE_BONUS, LEFT, RIGHT, BRAKE;
+    FORWARD, LEFT, RIGHT, USE_BONUS, BRAKE;
 }
