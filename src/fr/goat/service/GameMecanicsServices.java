@@ -14,7 +14,7 @@ import fr.goat.utils.MoveEnum;
 
 public class GameMecanicsServices {
 
-    public static List<MoveEnum> evaluateNextPosition(final Player pPlayerNous, final List<Items> listObstacle) {
+    public static List<MoveEnum> evaluateNextPosition(final Player pPlayerNous, final Board board) {
         final List<MoveEnum> moveList = new ArrayList<>();
         for (final MoveEnum val : MoveEnum.values()) {
             moveList.add(val);
@@ -27,7 +27,7 @@ public class GameMecanicsServices {
             moveList.remove(MoveEnum.RIGHT);
         }
 
-        for (final Items item : listObstacle) {
+        for (final Items item : board.getItems()) {
             final Position posObstacle = item.getPosition();
 
             if (item.getType().equals("O") || item.getType().equals("M") || item.getType().equals("R")) {
@@ -43,11 +43,42 @@ public class GameMecanicsServices {
                 if (moveList.contains(MoveEnum.FORWARD) && testPosition(posObstacle, new Position(pos.getLane(), pos
                     .getRow() + 2))) {
 
+                    for (final Items item2 : board.getItems()) {
+                        if (item.getType().equals("O") || item.getType().equals("M") || item.getType().equals("R")) {
+                            if (testPosition(item2.getPosition(), new Position(pos.getLane() - 1, pos.getRow() + 2))) {
+                                moveList.remove(MoveEnum.LEFT);
+                            } else if (testPosition(item2.getPosition(), new Position(pos.getLane() + 1, pos.getRow()
+                                + 2))) {
+                                moveList.remove(MoveEnum.RIGHT);
+                            }
+                        }
+                    }
+
                     moveList.remove(MoveEnum.FORWARD);
                     moveList.remove(MoveEnum.USE_BONUS);
                 }
                 if (testPosition(posObstacle, new Position(pos.getLane() + 1, pos.getRow() + 1))) {
                     moveList.remove(MoveEnum.RIGHT);
+                }
+            }
+        }
+
+        for (final Player player : board.getPlayers()) {
+            if (new Position(player.getPosition().getLane(), player.getPosition().getRow() + 1).equals(pPlayerNous
+                .getPosition()) && player.getInventory() != null && player.getInventory().equals("M")) {
+                // tourne
+                if (moveList.contains(MoveEnum.LEFT)) {
+                    moveList.add(0, MoveEnum.LEFT);
+                } else if (moveList.contains(MoveEnum.RIGHT)) {
+                    moveList.add(0, MoveEnum.RIGHT);
+                }
+            } else if (new Position(player.getPosition().getLane(), player.getPosition().getRow() - 2).equals(
+                pPlayerNous.getPosition()) && player.getInventory() != null && player.getInventory().equals("I")) {
+                // tourne
+                if (moveList.contains(MoveEnum.LEFT)) {
+                    moveList.add(0, MoveEnum.LEFT);
+                } else if (moveList.contains(MoveEnum.RIGHT)) {
+                    moveList.add(0, MoveEnum.RIGHT);
                 }
             }
         }
@@ -62,7 +93,7 @@ public class GameMecanicsServices {
         return moveList;
     }
 
-    public static List<MoveEnum> evaluateNextPositionNewGen(final Player pPlayerNous, final List<Items> listObstacle) {
+    public static List<MoveEnum> evaluateNextPositionNewGen(final Player pPlayerNous, final Board board) {
         final List<MoveEnum> moveList = new ArrayList<>();
         for (final MoveEnum val : MoveEnum.values()) {
             moveList.add(val);
@@ -76,7 +107,7 @@ public class GameMecanicsServices {
         }
 
         final Map<Position, Items> mapItem = new HashMap<Position, Items>();
-        for (final Items item : listObstacle) {
+        for (final Items item : board.getItems()) {
             if (item.getType().equals("O") || item.getType().equals("M") || item.getType().equals("R")) {
                 mapItem.put(item.getPosition(), item);
             }
@@ -92,15 +123,43 @@ public class GameMecanicsServices {
             moveList.remove(MoveEnum.USE_BONUS);
         }
         if (moveList.contains(MoveEnum.FORWARD) && mapItem.get(new Position(pos.getLane(), pos.getRow() + 2)) != null) {
-            // if(mapItem.get(new Position())) {
-            //
-            // }
+            if (mapItem.get(new Position(pos.getLane() - 1, pos.getRow() + 2)) != null && !mapItem.get(new Position(pos
+                .getLane() - 1, pos.getRow() + 2)).getType().equals("R")) {
+                moveList.remove(MoveEnum.LEFT);
+            } else if (mapItem.get(new Position(pos.getLane() + 1, pos.getRow() + 2)) != null && !mapItem.get(
+                new Position(pos.getLane() + 1, pos.getRow() + 2)).getType().equals("R")) {
+                moveList.remove(MoveEnum.RIGHT);
+            }
 
             moveList.remove(MoveEnum.FORWARD);
             moveList.remove(MoveEnum.USE_BONUS);
         }
         if (mapItem.get(new Position(pos.getLane() + 1, pos.getRow() + 1)) != null) {
             moveList.remove(MoveEnum.RIGHT);
+        }
+
+        if (moveList == null || moveList.size() == 0) {
+            return moveList;
+        }
+
+        for (final Player player : board.getPlayers()) {
+            if (new Position(player.getPosition().getLane(), player.getPosition().getRow() + 1).equals(pPlayerNous
+                .getPosition()) && player.getInventory() != null && player.getInventory().equals("M")) {
+                // tourne
+                if (moveList.contains(MoveEnum.LEFT)) {
+                    moveList.add(0, MoveEnum.LEFT);
+                } else if (moveList.contains(MoveEnum.RIGHT)) {
+                    moveList.add(0, MoveEnum.RIGHT);
+                }
+            } else if (new Position(player.getPosition().getLane(), player.getPosition().getRow() - 2).equals(
+                pPlayerNous.getPosition()) && player.getInventory() != null && player.getInventory().equals("I")) {
+                // tourne
+                if (moveList.contains(MoveEnum.LEFT)) {
+                    moveList.add(0, MoveEnum.LEFT);
+                } else if (moveList.contains(MoveEnum.RIGHT)) {
+                    moveList.add(0, MoveEnum.RIGHT);
+                }
+            }
         }
 
         if (moveList.contains(MoveEnum.FORWARD) && pPlayerNous.getInventory() != null && !pPlayerNous.getInventory()
